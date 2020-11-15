@@ -1,0 +1,30 @@
+{
+  "photos":
+  [
+    {
+      "src": "Pictures/foto1.jpg",
+      "title": "Názov fotky 1",
+      "description": "Dlhší popis obrázku 1"
+    },
+    {
+      "src": "Pictures/foto2.jpg",
+      "title": "Názov fotky 2",
+      "description": "Dlhší popis obrázku 2"
+    },
+    {
+      "src": "Pictures/foto3.jpg",
+      "title": "Názov fotky 3",
+      "description": "Dlhší popis obrázku 3"
+    },
+    {
+      "src": "Pictures/foto4.jpg",
+      "title": "Názov fotky 3",
+      "description": "Dlhší popis obrázku 3"
+    }, 
+    {
+      "src": "Pictures/foto5.jpg",
+      "title": "Názov fotky 3",
+      "description": "Dlhší popis obrázku 3"
+    }       
+  ]
+}
