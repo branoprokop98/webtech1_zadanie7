@@ -17,17 +17,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchArrayCookie = getCookie("searchArray");
     JSON.stringify(positions);
     console.log(cookieValue)
+    findedPictures.splice(0, 4)
     if (searchArrayCookie) {
         findedPictures = JSON.parse(searchArrayCookie);
     }
     if (cookieValue) {
         searchInput.value = cookieValue;
     }
+    else {
+        findedPictures.splice(0, 4)
+    }
     if (cookiePosition) {
-        positions = JSON.parse(cookiePosition)
-        objectPosition = positions
+        positions = JSON.parse(cookiePosition) //JSON.parse(cookiePosition)
+        objectPosition = JSON.parse(cookiePosition)
         console.log(positions);
         console.log(cookiePosition);
+    }
+    else {
+        fetch("resources/photos.json")
+            .then(response => response.json())
+            .then(json => {
+                for (let i = 0; i < json.photos.length; i++) {
+                    objectPosition[i] = json.photos[i];
+                }
+            })
     }
 
     searchInput.addEventListener("input", (evt) => {
@@ -35,9 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("resources/photos.json")
             .then(response => response.json())
             .then(json => {
-                positions.forEach((item, index) => {
-                    if (json.photos[item].title.includes(searchInput.value) && searchInput.value != "") {
-                        findedPictures.push(json.photos[item])
+                objectPosition.forEach((item, index) => {
+                    if (json.photos[index].title.includes(searchInput.value) && searchInput.value != "") {
+                        findedPictures.push(json.photos[index])
                     }
                 })
                 if (findedPictures.length > 0 && searchInput.value != "") {
@@ -45,6 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     findedPictures.forEach((item, index) => {
                         let galleryItem = document.createElement("img");
                         galleryItem.setAttribute("src", findedPictures[index].src)
+                        let id = findedPictures[index].id
+                        galleryItem.setAttribute("onclick", "showSlideShow(" + id + ")")
                         galleryItem.classList = "thumbnail"
                         gallery.appendChild(galleryItem)
                         galleryItem.ondragstart = dragStart
@@ -54,14 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 else {
                     clearGallery()
-                    positions.forEach((item, index) => {
+                    objectPosition.forEach((item, index) => {
                         let galleryItem = document.createElement("img");
-                        galleryItem.setAttribute("src", json.photos[item].src)
+                        galleryItem.setAttribute("src", objectPosition[index].src)
+                        if (galleryItem.id == "") {
+                            galleryItem.id = objectPosition[index].id                      //positions[index]
+                        }
+                        let id = galleryItem.id;
+                        galleryItem.setAttribute("onclick", "showSlideShow(" + id + ")")
                         galleryItem.classList = "thumbnail"
                         galleryItem.id = index
                         gallery.appendChild(galleryItem)
                         galleryItem.ondragstart = dragStart
                         galleryItem.ondragover = dragOver
+                        findedPictures.splice(0, 4);
                     });
                 }
             })
@@ -73,26 +94,33 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("resources/photos.json")
         .then(response => response.json())
         .then(json => {
-            positions.forEach((item, index) => {
-                let galleryItem = document.createElement("img");
-                galleryItem.setAttribute("src", json.photos[item].src)
-                galleryItem.classList = "thumbnail"
-                if (galleryItem.id == "") {
-                    galleryItem.id = positions[index]
-                }
-                let id = galleryItem.id;
-                galleryItem.setAttribute("onclick", "showSlideShow(" + id + ")")
-                objectPosition[index] = galleryItem
-                gallery.appendChild(galleryItem)
-                galleryItem.ondragstart = dragStart
-                galleryItem.ondragover = dragOver
-                galleryItem.ondragend = dragEnd
-            })
+            if (findedPictures == 0 && searchInput.value == "") {
+                objectPosition.forEach((item, index) => {        //positions.forEach((item, index) => {
+                    let galleryItem = document.createElement("img");
+                    galleryItem.setAttribute("src", objectPosition[index].src)  //json.photos[item].src
+                    galleryItem.classList = "thumbnail"
+                    if (galleryItem.id == "") {
+                        galleryItem.id = objectPosition[index].id                      //positions[index]
+                    }
+                    let id = galleryItem.id;
+                    galleryItem.setAttribute("onclick", "showSlideShow(" + id + ")")
+                    //objectPosition[index] = galleryItem
+                    gallery.appendChild(galleryItem)
+                    galleryItem.ondragstart = dragStart
+                    galleryItem.ondragover = dragOver
+                    galleryItem.ondragend = dragEnd
+                })
+            }
             if (findedPictures.length > 0 && searchInput.value != "") {
                 clearGallery()
                 findedPictures.forEach((item, index) => {
                     let galleryItem = document.createElement("img");
                     galleryItem.setAttribute("src", findedPictures[index].src)
+                    if (galleryItem.id == "") {
+                        galleryItem.id = objectPosition[index].id                      //positions[index]
+                    }
+                    let id = galleryItem.id;
+                    galleryItem.setAttribute("onclick", "showSlideShow(" + id + ")")
                     galleryItem.classList = "thumbnail"
                     galleryItem.id = index
                     gallery.appendChild(galleryItem)
@@ -100,11 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     galleryItem.ondragover = dragOver
                 });
             }
+            setCookie("position", JSON.stringify(objectPosition), 2);
         })
 
 
 
-    setCookie("position", JSON.stringify(positions), 2);
+    //setCookie("position", objectPosition, 2);
     console.log(positions.toString())
 });
 
@@ -154,8 +183,24 @@ function dragEnd(evt) {
     // let tmp = objectPosition[draggedObject.id]
     // objectPosition[draggedObject.id] = objectPosition[4];
     // objectPosition[4] = tmp;
+
     let dragIdx = objectPosition.indexOf(draggedObject);
     let hoverIdx = objectPosition.indexOf(hoveredObject);
+
+    for (let i = 0; i < objectPosition.length; i++) {
+        if (objectPosition[i].id == draggedObject.id) {
+            dragIdx = i;
+            break;
+        }
+    }
+
+    for (let i = 0; i < objectPosition.length; i++) {
+        if (objectPosition[i].id == hoveredObject.id) {
+            hoverIdx = i;
+            break;
+        }
+    }
+
 
     shiftPosition(dragIdx, hoverIdx);
 }
@@ -183,8 +228,8 @@ function shiftPosition(start, end) {
     for (let i = 0; i < tmp.length; i++) {
         positions[i] = parseInt(objectPosition[i].id);
     }
-    setCookie("position", JSON.stringify(positions), 2);
     objectPosition = tmp;
+    setCookie("position", JSON.stringify(objectPosition), 2);
     console.log(tmp);
 }
 
@@ -197,23 +242,24 @@ function closeWindow() {
     for (var x = rowCount - 1; x >= 0; x--) {
         elmtTable.removeChild(tableRows[x]);
     }
-    
+
     let galleryElem = document.getElementById("slideWindow");
-    let divsIngalery =  galleryElem.getElementsByTagName('div');
+    let divsIngalery = galleryElem.getElementsByTagName('div');
     let divCount = divsIngalery.length;
 
-    for(let i = divCount-1; i >=0; i--){
+    for (let i = divCount - 1; i >= 0; i--) {
         galleryElem.removeChild(divsIngalery[i]);
     }
 
 }
 
+var slideArray = new Array();
 
 function showSlideShow(id) {
 
     let picId;
-    for(let i = 0; i < objectPosition.length; i++){
-        if(parseInt(objectPosition[i].id) == id){
+    for (let i = 0; i < objectPosition.length; i++) {
+        if (parseInt(objectPosition[i].id) == id) {
             picId = i;
             break;
         }
@@ -223,16 +269,90 @@ function showSlideShow(id) {
     // let slideItem = document.createElement("div");
     // slideItem.classList.add("carousel-inner")
     // slideItem.setAttribute("role", "listbox")
+    let divPos = 0;
     var slideWindow = document.getElementById("slideWindow");
     slideWindow.appendChild(document.createElement("div")).className = "carousel-item active"
-    let box = slideWindow.getElementsByClassName("carousel-item active")[0];
-    
+    let box = slideWindow.getElementsByClassName("carousel-item active")[divPos];
+
     var image = document.createElement("img");
     image.className = "d-block w-100"
     image.setAttribute("src", objectPosition[picId].src)
     box.appendChild(image)
-    
+
+    let desc = document.createElement("div");
+    desc.className = "text-center"
+    desc.innerHTML += objectPosition[picId].title
+    box.appendChild(desc)
+
+    slideArray.splice(0, 4);
+    slideArray.push(objectPosition[picId])
+
+    if (findedPictures.length != 0) {
+        for (let i = 0; i < findedPictures.length; i++) {
+            if (findedPictures[i].id != picId) {
+                slideArray.push(findedPictures[i]);
+                var slideWindow = document.getElementById("slideWindow");
+                slideWindow.appendChild(document.createElement("div")).className = "carousel-item"
+                divPos++;
+                let box = slideWindow.getElementsByClassName("carousel-item")[divPos];
+
+                var image = document.createElement("img");
+                image.className = "d-block w-100"
+                image.setAttribute("src", findedPictures[i].src)
+                box.appendChild(image)
+            }
+        }
+    }
+
+    else {
+        for (let i = picId; i < objectPosition.length; i++) {
+            if (i != picId) {
+                slideArray.push(objectPosition[i]);
+                var slideWindow = document.getElementById("slideWindow");
+                slideWindow.appendChild(document.createElement("div")).className = "carousel-item"
+                divPos++;
+                let box = slideWindow.getElementsByClassName("carousel-item")[divPos];
+
+                var image = document.createElement("img");
+                image.className = "d-block w-100"
+                image.setAttribute("src", objectPosition[i].src)
+                box.appendChild(image)
+
+                let desc = document.createElement("div");
+                desc.className = "text-center"
+                desc.innerHTML += objectPosition[i].title
+
+                box.appendChild(desc)
+            }
+        }
+
+        for (let i = 0; i < picId; i++) {
+            if (i != picId) {
+                slideArray.push(objectPosition[i])
+                var slideWindow = document.getElementById("slideWindow");
+                slideWindow.appendChild(document.createElement("div")).className = "carousel-item"
+                divPos++;
+                let box = slideWindow.getElementsByClassName("carousel-item")[divPos];
+
+                var image = document.createElement("img");
+                image.className = "d-block w-100"
+                image.setAttribute("src", objectPosition[i].src)
+                box.appendChild(image)
+
+                let desc = document.createElement("div");
+                desc.className = "text-center"
+                desc.innerHTML += objectPosition[i].title
+
+                box.appendChild(desc)
+            }
+        }
+    }
+
     //let img = box.appendChild("img")
     //let img = box.createElement("img")
     //img.setAttribute("src", objectPosition[id].src);
 }
+
+var prev = document.getElementById("prevButton");
+var next = document.getElementById("nextButton");
+
