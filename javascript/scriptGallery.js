@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     let galleryItem = document.createElement("img");
                     galleryItem.setAttribute("src", objectPosition[index].src); //json.photos[item].src
                     galleryItem.classList = "thumbnail";
+                    galleryItem.setAttribute("data-toggle", "modal")
+                    galleryItem.setAttribute("data-target", ".bs-example-modal-lg")
                     if (galleryItem.id == "") {
                         galleryItem.id = objectPosition[index].id; //positions[index]
                     }
@@ -60,6 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     let galleryItem = document.createElement("img");
                     galleryItem.setAttribute("src", findedPictures[index].src); //json.photos[item].src
                     galleryItem.classList = "thumbnail";
+                    galleryItem.setAttribute("data-toggle", "modal")
+                    galleryItem.setAttribute("data-target", ".bs-example-modal-lg")
                     if (galleryItem.id == "") {
                         galleryItem.id = findedPictures[index].id; //positions[index]
                     }
@@ -90,6 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         let id = findedPictures[index].id
                         galleryItem.setAttribute("onclick", "showSlideForFind(" + id + ")")
                         galleryItem.classList = "thumbnail"
+                        galleryItem.setAttribute("data-toggle", "modal")
+                        galleryItem.setAttribute("data-target", ".bs-example-modal-lg")
                         gallery.appendChild(galleryItem)
                         //setCookie("searchArray", JSON.stringify(findedPictures), 2);
                     })
@@ -105,6 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         let id = galleryItem.id;
                         galleryItem.setAttribute("onclick", "showSlideShow(" + id + ")")
                         galleryItem.classList = "thumbnail"
+                        galleryItem.setAttribute("data-toggle", "modal")
+                        galleryItem.setAttribute("data-target", ".bs-example-modal-lg")
                         galleryItem.id = index
                         gallery.appendChild(galleryItem)
                         //findedPictures.splice(0, 4);
@@ -305,7 +313,7 @@ function showSlideForFind(id) {
         let box = slideWindow.getElementsByClassName("carousel-item")[i];
 
         var image = document.createElement("img");
-        image.className = "d-block w-100"
+        image.className = "d-block w-75 mx-auto"
         image.setAttribute("src", slideArray[i].src)
         box.appendChild(image)
     }
@@ -313,14 +321,14 @@ function showSlideForFind(id) {
 
 function startSlideShow(){
   let galleryBox = document.getElementById("carousel-example-1z");
-  galleryBox.setAttribute("data-ride", "carousel");
-  galleryBox.classList.add("slide")
+  galleryBox.setAttribute("data-interval", "2000");
+  //galleryBox.classList.add("slide")
 }
 
 function stopSlideShow(){
   let galleryBox = document.getElementById("carousel-example-1z");
-  galleryBox.removeAttribute("data-ride")
-  galleryBox.classList.remove("startSlideShow")
+  galleryBox.setAttribute("data-interval", "false")
+  //galleryBox.classList.remove("startSlideShow")
 }
 
 
