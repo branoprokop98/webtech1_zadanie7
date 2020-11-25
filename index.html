@@ -16,17 +16,24 @@
     <script src="javascript/jQueryScript.js"></script>
 </head>
 
-<body>
-
+<body class="bg-light">
     <div class="container">
+        <h1 class="text-center">Galéria</h1>
         <div class="row">
             <article class="col-md">
                 <div class="form-group">
                     <!-- <label for="search">Email address</label> -->
-                    <input type="text" class="form-control" id="search" aria-describedby="emailHelp"
-                        placeholder="Hľadať">
+                    <input type="text" class="form-control shadow-lg p-3 mb-5 bg-white rounded" id="search" placeholder="Hľadať">
                 </div>
 
+                <div id="layer-cookie">
+                    <div id="modal-cookie">
+                        <p class="text-center">Táto stránka používa cookies. Stalčením tlačidla súhlasíte s používaním cookies na stránke</p>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-success" id="cookieButton" onclick="cookieLayerControl()">Súhlasím</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- <input type="text" name="search" class="text-center" id="search"> -->
 
@@ -40,23 +47,18 @@
 
                             </div>
 
-                            <a class="carousel-control-prev" href="#carousel-example-1z" role="button" data-slide="prev"
-                                id="prevButton">
+                            <a class="carousel-control-prev" href="#carousel-example-1z" role="button" data-slide="prev" id="prevButton">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="sr-only">Previous</span>
                             </a>
-                            <a class="carousel-control-next" href="#carousel-example-1z" role="button" data-slide="next"
-                                id="nextButton">
+                            <a class="carousel-control-next" href="#carousel-example-1z" role="button" data-slide="next" id="nextButton">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a>
                             <div class="col text-center">
-                                <button type="button" class="btn btn-primary m-3" id="closeWindow" style="z-index: 10;"
-                                    onclick="closeWindow()">Zatvoriť galériu</button>
-                                <button type="button" class="btn btn-primary m-3" id="startAnimation"
-                                    style="z-index: 10;">Spustiť animáciu</button>
-                                <button type="button" class="btn btn-primary m-3" id="stopAnimation"
-                                    style="z-index: 10;">Ukončiť animáciu</button>
+                                <button type="button" class="btn btn-primary m-3" id="closeWindow" style="z-index: 10;" onclick="closeWindow()">Zatvoriť galériu</button>
+                                <button type="button" class="btn btn-primary m-3" id="startAnimation" style="z-index: 10;">Spustiť animáciu</button>
+                                <button type="button" class="btn btn-primary m-3" id="stopAnimation" style="z-index: 10;">Ukončiť animáciu</button>
                             </div>
                         </div>
                     </div>
